@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace SentimentAnalysis
 {
@@ -13,13 +14,34 @@ namespace SentimentAnalysis
             // Загрузка файла словаря AFINN в формате json
             string afinnFilePath = "AFINN-ru.json";
             JObject afinn = JObject.Parse(File.ReadAllText(afinnFilePath));
-            // Тестирование метода для определения тональности текста на основе словаря AFINN
-            string text1 = "Да. Этот фильм был просто ужасный и жалобный";
-            string text2 = "Я очень люблю этот ресторан";
-            int score1 = GetSentimentScore(text1, afinn);
-            int score2 = GetSentimentScore(text2, afinn); 
-            Console.WriteLine(score1);
-            Console.WriteLine(score2);
+
+
+            // Чтение текста из файла и его анализ
+            string path = "text.txt";
+            string text = ReadTextFromFile(path);
+            string[] lines = text.Split('\n');
+            foreach (string line in lines)
+            {
+                int score = GetSentimentScore(line, afinn);
+                switch (score)
+                {
+                    case int n when (n > 0):
+                        Console.WriteLine("Текст: {0}", line);
+                        Console.WriteLine("Оценка: {0}", score);
+                        Console.WriteLine("Настроение теста: положительное\n" + "-------------");
+                        break;
+                    case int n when (n < 0):
+                        Console.WriteLine("Текст: {0}", line);
+                        Console.WriteLine("Оценка: {0}", score);
+                        Console.WriteLine("Настроение теста: отрицательное\n" + "-------------");
+                        break;
+                    default:
+                        Console.WriteLine("Текст: {0}", line);
+                        Console.WriteLine("Оценка: {0}", score);
+                        Console.WriteLine("Настроение теста: нейтральное\n" + "-------------");
+                        break;
+                }
+            }
         }
 
         public static int GetSentimentScore(string text, JObject afinn)
@@ -42,5 +64,18 @@ namespace SentimentAnalysis
 
             return score;
         }
+
+
+        // Метод для чтения текста из файла
+        public static string ReadTextFromFile(string path)
+        {
+            string text = "";
+            using (StreamReader reader = new StreamReader(path))
+            {
+                text = reader.ReadToEnd();
+            }
+            return text;
+        }
+
     }
 }
