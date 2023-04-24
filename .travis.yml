@@ -1,0 +1,10 @@
+﻿language: csharp
+solution: SentimentAnalysis.sln
+mono: none
+dotnet: 5.0
+
+install:
+  - dotnet restore
+
+script:
+  - dotnet build
