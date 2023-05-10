@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>SentimentAnalysis</RootNamespace>
     <AssemblyName>SentimentAnalysis</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>netcoreapp3.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
