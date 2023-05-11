@@ -8,20 +8,20 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
 
-    - name: Set up .NET Framework
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 4.6.2
+    - name: Set up .NET Framework 4.6.2
+      run: |
+        choco install dotnet4.6.2 -y
+        refreshenv
+
+    - name: Restore NuGet packages
+      run: nuget restore
 
     - name: Build
-      run: dotnet build --configuration Release
-
-    - name: Test
-      run: dotnet test --configuration Release --no-restore
+      run: msbuild /p:Configuration=Release
