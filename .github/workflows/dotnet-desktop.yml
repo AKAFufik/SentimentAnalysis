@@ -9,43 +9,35 @@ on:
     branches: [ "master" ]
 
 jobs:
-
   build:
-    runs-on: windows-latest  
-    env:
-      Solution_Name: SentimentAnalysis.sln                     
-     
+    runs-on: windows-latest
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
       with:
-        fetch-depth: 0
+        dotnet-version: 5.0.301
 
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.x
-
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    # Execute all unit tests in the solution
-    - name: Execute unit tests
-      run: dotnet test
-
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
-   
-    - name: Restore dependencies
+    - name: Restore NuGet packages
       run: dotnet restore
-      
+
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --configuration Release
+
+    - name: Run tests
+      run: dotnet test --configuration Release --no-restore
       
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+    - name: Publish
+      run: dotnet publish --configuration Release --output ./publish
+
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: desktop-app
+        path: ./publish
+
+    - name: Run SentimentAnalysis program
+      run: dotnet run --configuration Release --project SentimentAnalysis/SentimentAnalysis.csproj
