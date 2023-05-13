@@ -11,11 +11,6 @@ on:
 jobs:
 
   build:
-
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
-
     runs-on: windows-latest  
     env:
       Solution_Name: SentimentAnalysis.sln                     
